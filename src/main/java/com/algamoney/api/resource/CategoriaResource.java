@@ -25,6 +25,13 @@ public class CategoriaResource {
         return categoriaRepository.findAll();
     }
 
+    @GetMapping("/{codigo}")
+    public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo){
+        Optional<Categoria> categoria = categoriaRepository.findById(codigo);
+
+        return categoria.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<Categoria> criar(@RequestBody @Valid Categoria categoria, HttpServletResponse response){
         Categoria categoriaSalva = categoriaRepository.save(categoria);
@@ -37,10 +44,5 @@ public class CategoriaResource {
 
     }
 
-    @GetMapping("/{codigo}")
-    public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo){
-        Optional<Categoria> categoria = categoriaRepository.findById(codigo);
 
-        return categoria.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
 }
