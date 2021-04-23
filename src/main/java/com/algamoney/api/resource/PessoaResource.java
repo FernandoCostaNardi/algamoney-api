@@ -1,17 +1,16 @@
 package com.algamoney.api.resource;
 
-import com.algamoney.api.model.Categoria;
+import com.algamoney.api.event.RecursoCriadoEvent;
 import com.algamoney.api.model.Pessoa;
 import com.algamoney.api.repository.PessoaRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +21,10 @@ public class PessoaResource {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    @GetMapping
     public List<Pessoa> lista(){
         return pessoaRepository.findAll();
     }
@@ -37,11 +40,9 @@ public class PessoaResource {
     public ResponseEntity<Pessoa> criar(@RequestBody @Valid Pessoa pessoa, HttpServletResponse response){
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}")
-                .buildAndExpand(pessoaSalva.getCodigo()).toUri();
-        response.setHeader("Location", uri.toASCIIString());
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
 
-        return ResponseEntity.created(uri).body(pessoaSalva);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
 
     }
 }
