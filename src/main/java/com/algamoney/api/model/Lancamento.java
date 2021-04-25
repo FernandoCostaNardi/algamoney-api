@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@SuppressWarnings("NonAsciiCharacters")
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,7 +18,8 @@ public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigo;
-    private String descrição;
+
+    private String descricao;
 
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
@@ -29,7 +29,7 @@ public class Lancamento {
 
     private BigDecimal valor;
 
-    private String observação;
+    private String observacao;
 
     @Enumerated(EnumType.STRING)
     private TipoLancamento tipo;
