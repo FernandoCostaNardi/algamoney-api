@@ -15,13 +15,15 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    public Pessoa atualizar(Long codigo, Pessoa pessoa){
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public Pessoa atualizar(Long codigo, Pessoa pessoa) {
         Optional<Pessoa> pessoaSalva = buscarPessoaPeloCodigo(codigo);
         BeanUtils.copyProperties(pessoa, pessoaSalva.get(), "codigo");
         pessoaRepository.save(pessoaSalva.get());
         return pessoaSalva.get();
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void atualizarPropriedadeAtivo(Long codigo, Boolean ativo) {
         Optional<Pessoa> pessoaSalva = buscarPessoaPeloCodigo(codigo);
         pessoaSalva.get().setAtivo(ativo);
@@ -35,6 +37,4 @@ public class PessoaService {
         }
         return pessoaSalva;
     }
-
-
 }
