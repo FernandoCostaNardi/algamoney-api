@@ -37,18 +37,18 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
     private Predicate[] criarRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder, Root<Lancamento> root) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if(Objects.isNull(lancamentoFilter.getDescricao())) {
+        if(!Objects.isNull(lancamentoFilter.getDescricao())) {
            predicates.add(builder.like(
                    builder.lower(root.get("descricao")), "%" + lancamentoFilter.getDescricao().toLowerCase() + "%"
            ));
         }
 
         if(lancamentoFilter.getDataVencimentoDe() != null) {
- //           predicates.add();
+            predicates.add(builder.greaterThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoDe()));
         }
 
         if(lancamentoFilter.getDataVencimentoAte() != null) {
- //           predicates.add();
+            predicates.add(builder.lessThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoAte()));
         }
         return predicates.toArray(new Predicate[predicates.size()]);
     }
